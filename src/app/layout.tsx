@@ -5,7 +5,7 @@ import { openSans } from "@altha/core/lib/google-font";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Career | Altha Consulting",
+  title: "RASCI | Altha Consulting",
   description: "",
 };
 

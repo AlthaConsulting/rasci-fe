@@ -1,18 +1,9 @@
 "use client";
 
 import { CaretUpDown, Check } from "@phosphor-icons/react";
-import { Command as CommandPrimitive } from "cmdk";
-import {
-  ComponentPropsWithoutRef,
-  createContext,
-  forwardRef,
-  Fragment,
-  useContext,
-  useMemo,
-} from "react";
-import { PopoverProps } from "@radix-ui/react-popover";
+import { createContext, useContext, useState } from "react";
 
-import { type ButtonProps, Button } from "@altha/core/components/ui/button";
+import { Button } from "@altha/core/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -20,197 +11,170 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-  CommandLoading,
 } from "@altha/core/components/ui/command";
 import {
   Popover,
   PopoverContent,
-  PopoverContentProps,
   PopoverTrigger,
 } from "@altha/core/components/ui/popover";
-import { cn } from "@altha/core/lib/utils";
+import { cn } from "@altha/core/libs/utils";
 
-import { Empty } from "./empty";
-
-interface ItemField {
-  label: string;
-  value: string;
+interface ComboboxState {
+  open: () => void;
+  close: () => void;
 }
 
-export interface ComboboxContextProps {
-  items?: ItemField[];
-  value?: ItemField["value"];
-  onValueChange?: (value: ItemField["value"]) => void;
+interface ComboboxProps {
+  list: { label: string; value: string }[];
+  defaultValue?: string;
+  onValueChange?: (value: string) => void;
 }
 
-const ComboboxContext = createContext({} as ComboboxContextProps);
+const ComboboxContext = createContext<ComboboxProps & ComboboxState>(
+  {} as ComboboxProps & ComboboxState
+);
 
-const Combobox = ({
-  items,
-  value,
-  onValueChange,
+function Combobox({
   ...props
-}: PopoverProps & ComboboxContextProps) => {
+}: React.ComponentProps<typeof Popover> & ComboboxProps) {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const open = () => setIsOpen(true);
+  const close = () => setIsOpen(false);
+
   return (
     <ComboboxContext.Provider
       value={{
-        items,
-        value,
-        onValueChange,
+        ...props,
+        open,
+        close,
+        onValueChange: (value) => {
+          props.onValueChange?.(value);
+          close();
+        },
       }}
     >
-      <Popover {...props} />
+      <Popover
+        data-slot="combobox"
+        open={isOpen}
+        onOpenChange={setIsOpen}
+        {...props}
+      />
     </ComboboxContext.Provider>
   );
-};
+}
 
-const ComboboxTrigger = PopoverTrigger;
-
-const ComboboxValue = forwardRef<
-  HTMLButtonElement,
-  ButtonProps & { placeholder?: string }
->(({ loading, ...props }, ref) => {
-  const { items, value } = useContext(ComboboxContext);
-
-  const isBoxEmpty = useMemo(() => {
-    if (!items) return false;
-    return items.length === 0;
-  }, [items]);
-
-  const isBoxFilled = useMemo(() => {
-    if (value && typeof value === "string") {
-      return value.trim().length > 0;
-    }
-
-    return Boolean(value);
-  }, [value]);
-
-  const isEmpty = useMemo(() => {
-    return isBoxEmpty || !isBoxFilled;
-  }, [isBoxEmpty, isBoxFilled]);
-
+function ComboboxTrigger({
+  ...props
+}: React.ComponentProps<typeof PopoverTrigger>) {
   return (
-    <Button
-      ref={ref}
-      className={cn(
-        "px-3 justify-between hover:bg-transparent font-normal",
-        "aria-[invalid='true']:border-destructive",
-        (loading || isEmpty) &&
-          "text-muted-foreground hover:text-muted-foreground"
-      )}
-      role="combobox"
-      variant="outline"
+    <PopoverTrigger asChild data-slot="combobox-trigger" {...props}>
+      <Button
+        className={cn(
+          "w-full justify-between text-left font-normal hover:bg-transparent text-base md:text-sm h-9",
+          props.className
+        )}
+        role="combobox"
+        variant="outline"
+      >
+        {props.children}
+        <CaretUpDown className="opacity-50" />
+      </Button>
+    </PopoverTrigger>
+  );
+}
+
+function ComboboxValue({
+  placeholder = "Select",
+  ...props
+}: React.ComponentProps<"span"> & { placeholder?: string }) {
+  const { list, defaultValue: value } = useContext(ComboboxContext);
+  return (
+    <span
+      data-slot="combobox-value"
+      className={cn(!value && "!text-muted-foreground")}
       {...props}
     >
-      {loading
-        ? "Loading..."
-        : isEmpty
-        ? props.placeholder
-        : items!.find((item) => item.value === value)?.label ||
-          props.placeholder ||
-          "Select something"}
-      <CaretUpDown className="size-4" />
-    </Button>
+      {value ? list.find((item) => item.value === value)?.label : placeholder}
+    </span>
   );
-});
-ComboboxValue.displayName = "ComboboxValue";
-
-interface CoreComboboxContentProps {
-  loading?: boolean;
 }
 
-interface ComboboxContentProps
-  extends CoreComboboxContentProps,
-    PopoverContentProps {
-  command?: ComponentPropsWithoutRef<typeof CommandPrimitive>;
-  commandEmpty?: ComponentPropsWithoutRef<typeof CommandPrimitive.Empty>;
-  commandGroup?: ComponentPropsWithoutRef<typeof CommandPrimitive.Group>;
-  commandInput?: ComponentPropsWithoutRef<typeof CommandPrimitive.Input>;
-  commandLoading?: ComponentPropsWithoutRef<typeof CommandPrimitive.Loading>;
+function ComboboxContent({
+  ...props
+}: React.ComponentProps<typeof PopoverContent>) {
+  return (
+    <PopoverContent
+      data-slot="combobox-content"
+      className={cn(
+        "w-[var(--radix-popover-trigger-width)] p-0",
+        props.className
+      )}
+      {...props}
+    >
+      <Command>{props.children}</Command>
+    </PopoverContent>
+  );
 }
 
-const ComboboxContent = forwardRef<
-  React.ComponentRef<typeof PopoverContent>,
-  ComboboxContentProps
->(
-  (
-    {
-      children,
-      command,
-      commandEmpty,
-      commandGroup,
-      commandInput,
-      commandLoading,
-      loading,
-      ...props
-    },
-    ref
-  ) => {
-    return (
-      <PopoverContent
-        ref={ref}
-        className="w-[var(--radix-popover-trigger-width)] p-0"
-        {...props}
-      >
-        <Command {...command}>
-          <CommandInput {...commandInput} />
-          <CommandList>
-            {loading ? (
-              <CommandLoading {...commandLoading} />
-            ) : (
-              <Fragment>
-                <CommandEmpty
-                  {...commandEmpty}
-                  className="flex flex-col items-center justify-center py-8"
-                >
-                  <Empty />
-                  <span className="text-sm text-muted-foreground mt-1">
-                    No data found
-                  </span>
-                </CommandEmpty>
-                <CommandGroup {...commandGroup}>{children}</CommandGroup>
-              </Fragment>
-            )}
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    );
-  }
-);
-ComboboxContent.displayName = "ComboboxContent";
+function ComboboxInput({
+  ...props
+}: React.ComponentProps<typeof CommandInput>) {
+  return (
+    <CommandInput
+      data-slot="combobox-input"
+      className={cn("h-9", props.className)}
+      {...props}
+    />
+  );
+}
 
-const ComboboxItem = forwardRef<
-  React.ComponentRef<typeof CommandPrimitive.Item>,
-  Omit<
-    React.ComponentPropsWithoutRef<typeof CommandPrimitive.Item>,
-    "value"
-  > & {
-    value: ItemField["value"];
-  }
->((props, ref) => {
-  const { value, onValueChange } = useContext(ComboboxContext);
+function ComboboxList({ ...props }: React.ComponentProps<typeof CommandList>) {
+  return (
+    <CommandList data-slot="combobox-list" {...props}>
+      <CommandEmpty>No data found.</CommandEmpty>
+      {props.children}
+    </CommandList>
+  );
+}
+
+function ComboboxGroup({
+  ...props
+}: React.ComponentProps<typeof CommandGroup>) {
+  return <CommandGroup data-slot="combobox-group" {...props} />;
+}
+
+function ComboboxItem({
+  value,
+  ...props
+}: React.ComponentProps<typeof CommandItem> & { value: string }) {
+  const { defaultValue, onValueChange } = useContext(ComboboxContext);
   return (
     <CommandItem
-      ref={ref}
+      data-slot="combobox-item"
+      keywords={[String(props.children), value]}
+      onSelect={() => onValueChange?.(value)}
+      value={value}
       {...props}
-      onSelect={() => onValueChange?.(props.value)}
     >
+      {props.children}
       <Check
         className={cn(
-          "size-4",
-          props.value === value ? "opacity-100" : "opacity-0"
+          "ml-auto",
+          value === defaultValue ? "opacity-100" : "opacity-0"
         )}
       />
-      {props.children}
     </CommandItem>
   );
-});
-ComboboxItem.displayName = "ComboboxItem";
+}
 
 export {
   Combobox,
+  ComboboxContent,
+  ComboboxGroup,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
   ComboboxTrigger,
   ComboboxValue,
-  ComboboxContent,
-  ComboboxItem,
 };

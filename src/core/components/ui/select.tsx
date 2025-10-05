@@ -157,7 +157,7 @@ function SelectEmpty({ className, ...props }: React.ComponentProps<"div">) {
       {...props}
     >
       <Empty />
-      Empty sets...
+      Empty data
     </div>
   );
 }
