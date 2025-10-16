@@ -10,17 +10,16 @@ import {
 import { Form } from "./_/form";
 import { useTable } from "./_/use-table";
 import { DataTable } from "@altha/core/components/ui/data-table";
-import { TableFilter } from "./_/table-filter";
 
-export default function PageRasciMapping() {
+export default function PageLevel() {
   const { columns, data, error, loading, pagination, params } = useTable();
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>RASCI Mapping</CardTitle>
+        <CardTitle>Job Level</CardTitle>
         <CardDescription>
-          Master data for rasci mapping, try to upload csv file or manual add.
+          Master data for job level, try to upload csv file or manual add.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -29,18 +28,10 @@ export default function PageRasciMapping() {
           data={data}
           columns={columns}
           controls={{
-            action: {
-              enabled: true,
-              children: (
-                <div className="flex items-center gap-4">
-                  <TableFilter />
-                </div>
-              ),
-            },
             filter: {
               enabled: true,
               keyword: params.q || "",
-              placeholder: "Search data...",
+              placeholder: "Search job level...",
             },
             pagination,
             addData: { enabled: true },

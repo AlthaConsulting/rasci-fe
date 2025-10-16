@@ -3,14 +3,12 @@ import { useForm as ReactHookForm } from "react-hook-form";
 import { useCallback, useMemo } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { usePosition, useCreatePosition, useUpdatePosition, useImportPosition } from "./rpcs";
-import { useLevel } from "../../level/_/rpcs";
+import { useLevel, useCreateLevel, useUpdateLevel, useImportLevel } from "./rpcs";
 
 // Schema for manual entry
 const manualSchema = z.object({
   entry: z.literal("manual"),
-  name: z.string().min(1, { message: "Position name cannot be empty" }),
-  level: z.string({ required_error: "Level is required" }),
+  name: z.string().min(1, { message: "Level name cannot be empty" }),
   file: z.custom<File[]>()
 });
 
@@ -38,25 +36,22 @@ export const useForm = ({
     defaultValues: {
       entry: "manual",
       name: initialData?.name || "",
-      level: initialData?.level.id || undefined,
       file: []
     },
   });
 
   const entry = form.watch("entry");
-  const position = usePosition({ page: "1", page_size: "100" });
-  const level = useLevel({ page: "1", page_size: "100" });
+  const position = useLevel({ page: "1", page_size: "100" });
 
-  const createPosition = useCreatePosition();
-  const updatePosition = useUpdatePosition();
-  const importPosition = useImportPosition(); 
-
+  const createLevel = useCreateLevel();
+  const updateLevel = useUpdateLevel();
+  const importLevel = useImportLevel(); 
   const mutation =
     entry === "import"
-      ? importPosition
+      ? importLevel
       : isEditing
-      ? updatePosition
-      : createPosition;
+      ? updateLevel
+      : createLevel;
 
   const submitHandler = useCallback(
     (data: z.infer<typeof schema>) => {
@@ -66,12 +61,10 @@ export const useForm = ({
         payload = isEditing
           ? {
               id: initialData!.id,
-              name: data.name,
-              level: data.level,
+              name: data.name
             }
           : {
               name: data.name,
-              level: data.level,
             };
       } else {
         // import mode
@@ -82,7 +75,7 @@ export const useForm = ({
       mutation.mutate(payload, {
         onError(error: any) {
           toast.error(
-            `Failed to ${isEditing ? "update" : "create"} position`,
+            `Failed to ${isEditing ? "update" : "create"} job level`,
             {
               description: error.response?.data.errors?.[0]?.message,
             }
@@ -91,7 +84,7 @@ export const useForm = ({
         onSuccess() {
           onSubmit?.();
           toast.success(
-            `Position ${
+            `Job level ${
               isEditing ? "updated" : "created/imported"
             } successfully`
           );
@@ -102,7 +95,6 @@ export const useForm = ({
   );
 
   return {
-    level,
     position,
     isEditing,
     form,

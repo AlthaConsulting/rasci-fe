@@ -17,9 +17,9 @@ export default function PagePosition() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Position</CardTitle>
+        <CardTitle>Job Position</CardTitle>
         <CardDescription>
-          Master data for position, try to upload csv file or manual add.
+          Master data for job position, try to upload csv file or manual add.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -31,10 +31,11 @@ export default function PagePosition() {
             filter: {
               enabled: true,
               keyword: params.q || "",
-              placeholder: "Search position...",
+              placeholder: "Search job position...",
             },
             pagination,
-          }}
+            addData: { enabled: true },
+          } as any }
           error={error}
           loading={loading}
         />

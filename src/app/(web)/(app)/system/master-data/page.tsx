@@ -4,10 +4,11 @@ import { AppTabs } from "@altha/core/components/app-tabs";
 import PageLevelActivities from "./_/components/level-activities/page";
 import PagePosition from "./_/components/position/page";
 import PageRasciMapping from "./_/components/rasci-mapping/page";
+import PageLevel from "./_/components/level/page";
 
 type PageProps = {
   searchParams: Promise<{
-    tab: "level-activities" | "position-title" | "rasci-mapping";
+    tab: "level-activities" | "job-position" | "rasci-mapping" | "job-level";
   }>;
 };
 
@@ -20,8 +21,13 @@ export default async function Page({ searchParams }: PageProps) {
       component: <PageLevelActivities />, 
     },
     {
-      value: "position-title",
-      label: "Positions Title",
+      value: "job-level",
+      label: "Job Level",
+      component: <PageLevel />,
+    },
+    {
+      value: "job-position",
+      label: "Job Position",
       component: <PagePosition />,
     },
     {
@@ -33,7 +39,7 @@ export default async function Page({ searchParams }: PageProps) {
 
   return (
     <div className="container mx-auto">
-      <section className="flex flex-col lg:flex-row gap-5 lg:gap-8">
+      <section className="flex flex-col lg:flex-row gap-5 lg:gap-8 py-8">
         <AppTabs defaultTab={tab} tabs={tabs} vertical />
       </section>
     </div>

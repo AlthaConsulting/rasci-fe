@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { MasterDataActionColumn } from "@altha/core/components/templates/master-data";
 import { useIsMobile } from "@altha/core/hooks/use-is-mobile";
 import { Form } from "./form";
-import { useDeleteActivity, useLevelActivities } from "./rpcs";
+import { useDeleteLevel, useLevel } from "./rpcs";
 
 export const useTable = () => {
   const searchParams = useSearchParams();
@@ -17,8 +17,8 @@ export const useTable = () => {
   const sort = searchParams.get("sort") || undefined;
   const sortBy = searchParams.get("sort_by") || undefined;
 
-  const deleteActivity = useDeleteActivity();
-  const { data, error, isLoading, isPlaceholderData } = useLevelActivities({
+  const deleteLevel = useDeleteLevel();
+  const { data, error, isLoading, isPlaceholderData } = useLevel({
     filter,
     page,
     page_size: pageSize,
@@ -30,24 +30,12 @@ export const useTable = () => {
   const isMobile = useIsMobile();
   const columns = useMemo<ColumnDef<any>[]>(
     () => [
-      // {
-      //   meta: { fixed: "left", label: "No" },
-      //   size: 60,
-      //   id: "rowNumber",
-      //   header: "No",
-      //   cell: ({ row }) => <span>{row.index + 1}</span>,
-      // },
       {
-        meta: { label: "index" },
-        accessorKey: "index",
-        header: "Index",
-        cell: ({ row }) => {
-          return (
-            <div>
-              {row.original.index}
-            </div>
-          );
-        },
+        meta: { fixed: "left", label: "No" },
+        size: 60,
+        id: "rowNumber",
+        header: "No",
+        cell: ({ row }) => <span>{row.index + 1}</span>,
       },
       {
         meta: { label: "level" },
@@ -56,19 +44,7 @@ export const useTable = () => {
         cell: ({ row }) => {
           return (
             <div>
-              {row.original.level}
-            </div>
-          );
-        },
-      },
-      {
-        meta: { label: "description" },
-        accessorKey: "description",
-        header: "Activity",
-        cell: ({ row }) => {
-          return (
-            <div>
-              {row.original.description}
+              {row.original.name}
             </div>
           );
         },
@@ -85,17 +61,17 @@ export const useTable = () => {
               form={Form}
               initialData={row.original}
               onDelete={() => {
-                deleteActivity.mutate(
+                deleteLevel.mutate(
                   { id: row.original.id },
                   {
                     onError(error) {
-                      toast.error("Failed to delete level activity", {
+                      toast.error("Failed to delete job level", {
                         description: error.message,
                         descriptionClassName: "!text-destructive",
                       });
                     },
                     onSuccess() {
-                      toast.success("Level activity deleted successfully");
+                      toast.success("Job level deleted successfully");
                     },
                   }
                 );
@@ -105,10 +81,10 @@ export const useTable = () => {
         },
       },
     ],
-    [deleteActivity, isMobile]
+    [deleteLevel, isMobile]
   );
 
-  const levelActivity = useMemo(() => {
+  const level = useMemo(() => {
     if (!data) return [];
 
     const { records } = data.data;
@@ -117,7 +93,7 @@ export const useTable = () => {
   
   return {
     columns,
-    data: levelActivity || [],
+    data: level || [],
     error,
     loading: isLoading || isPlaceholderData,
     pagination: {

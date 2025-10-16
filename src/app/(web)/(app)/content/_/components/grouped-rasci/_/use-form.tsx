@@ -3,15 +3,17 @@ import { useForm as ReactHookForm } from "react-hook-form";
 import { useCallback, useMemo } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { usePosition, useCreatePosition, useUpdatePosition, useImportPosition } from "./rpcs";
-import { useLevel } from "../../level/_/rpcs";
+import { useRasciMapping, useCreateRasciMapping, useUpdateRasciMapping, useImportRasciMapping } from "./rpcs";
+import { usePosition } from "../../position/_/rpcs";
+import { useLevelActivities } from "../../level-activities/_/rpcs";
 
 // Schema for manual entry
 const manualSchema = z.object({
   entry: z.literal("manual"),
-  name: z.string().min(1, { message: "Position name cannot be empty" }),
-  level: z.string({ required_error: "Level is required" }),
-  file: z.custom<File[]>()
+  level_activities: z.string({ required_error: "Level activity is required" }),
+  position: z.string({ required_error: "Position is required" }),
+  rasci: z.string({ required_error: "RASCI mapping is required" }),
+  file: z.any().optional(),
 });
 
 // Schema for import file
@@ -37,26 +39,26 @@ export const useForm = ({
     resolver: zodResolver(schema),
     defaultValues: {
       entry: "manual",
-      name: initialData?.name || "",
-      level: initialData?.level.id || undefined,
+      level_activities: initialData?.level_activities.id || undefined,
+      position: initialData?.position.id || undefined,
+      rasci: initialData?.rasci || undefined,
       file: []
     },
   });
 
   const entry = form.watch("entry");
+  const levelActivities = useLevelActivities({ page: "1", page_size: "100" });
   const position = usePosition({ page: "1", page_size: "100" });
-  const level = useLevel({ page: "1", page_size: "100" });
 
-  const createPosition = useCreatePosition();
-  const updatePosition = useUpdatePosition();
-  const importPosition = useImportPosition(); 
-
+  const createRasci = useCreateRasciMapping();
+  const updateRasci = useUpdateRasciMapping();
+  const importRasci = useImportRasciMapping(); 
   const mutation =
     entry === "import"
-      ? importPosition
+      ? importRasci
       : isEditing
-      ? updatePosition
-      : createPosition;
+      ? updateRasci
+      : createRasci;
 
   const submitHandler = useCallback(
     (data: z.infer<typeof schema>) => {
@@ -66,12 +68,14 @@ export const useForm = ({
         payload = isEditing
           ? {
               id: initialData!.id,
-              name: data.name,
-              level: data.level,
+              level_activities: data.level_activities,
+              position: data.position,
+              rasci: data.rasci,
             }
           : {
-              name: data.name,
-              level: data.level,
+              level_activities: data.level_activities,
+              position: data.position,
+              rasci: data.rasci,
             };
       } else {
         // import mode
@@ -82,7 +86,7 @@ export const useForm = ({
       mutation.mutate(payload, {
         onError(error: any) {
           toast.error(
-            `Failed to ${isEditing ? "update" : "create"} position`,
+            `Failed to ${isEditing ? "update" : "create"} rasci mapping`,
             {
               description: error.response?.data.errors?.[0]?.message,
             }
@@ -91,7 +95,7 @@ export const useForm = ({
         onSuccess() {
           onSubmit?.();
           toast.success(
-            `Position ${
+            `RASCI Mapping ${
               isEditing ? "updated" : "created/imported"
             } successfully`
           );
@@ -102,7 +106,7 @@ export const useForm = ({
   );
 
   return {
-    level,
+    levelActivities,
     position,
     isEditing,
     form,

@@ -1,8 +1,6 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import BackgroundImage from "../../../public/images/hero-bg.jpg";
 import { useCallback, useMemo } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useGetAuthenticationStatus } from "@altha/app/(auth)/_/hooks/use-get-authentication-status";
@@ -15,12 +13,8 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Logo } from "./ui/logo";
@@ -33,13 +27,9 @@ import {
   SheetTrigger,
 } from "./ui/sheet";
 import {
-  Bell,
-  Briefcase,
-  ClipboardText,
   Gear,
   List,
   SignOut,
-  User,
 } from "@phosphor-icons/react";
 
 export const AppHeader = () => {
@@ -85,8 +75,12 @@ const useUrls = () => {
   const urls = useMemo(
     () => [
       {
-        label: "Home",
+        label: "Dashboard",
         href: "/",
+      },
+      {
+        label: "Generated Description",
+        href: "/system/generated-ai",
       },
       {
         label: "Master Data",
@@ -222,7 +216,7 @@ function PrivateHeader() {
             <PrivateLinks />
           </div>
           <div className="flex items-center gap-4 md:gap-5 lg:gap-8">
-            <Bell className="size-6" />
+            {/* <Bell className="size-6" /> */}
             <UserDropdownMenu />
           </div>
         </div>

@@ -30,13 +30,13 @@ export const useTable = () => {
   const isMobile = useIsMobile();
   const columns = useMemo<ColumnDef<any>[]>(
     () => [
-      {
-        meta: { fixed: "left", label: "No" },
-        size: 60,
-        id: "rowNumber",
-        header: "No",
-        cell: ({ row }) => <span>{row.index + 1}</span>,
-      },
+      // {
+      //   meta: { fixed: "left", label: "No" },
+      //   size: 60,
+      //   id: "rowNumber",
+      //   header: "No",
+      //   cell: ({ row }) => <span>{row.index + 1}</span>,
+      // },
       {
         meta: { label: "level_activities" },
         accessorKey: "level_activities",

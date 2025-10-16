@@ -16,14 +16,6 @@ import {
   FormMessage,
   FormDescription,
 } from "@altha/core/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectEmpty,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@altha/core/components/ui/select";
 import { Input } from "@altha/core/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@altha/core/components/ui/radio-group";
 import { useForm } from "./use-form";
@@ -36,7 +28,7 @@ export const Form = ({
   initialData?: City;
   onSubmit?: () => void;
 }) => {
-  const { level, position, isEditing, form, mutation, submitHandler } = useForm({
+  const { position, isEditing, form, mutation, submitHandler } = useForm({
     initialData,
     onSubmit,
   });
@@ -91,55 +83,19 @@ export const Form = ({
           )}
 
           {form.watch("entry") === "manual" ? (
-            <>
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel required>Position Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter position name here" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />  
-              <FormField
-                control={form.control}
-                name="level"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Job Level</FormLabel>
-                    <Select
-                      defaultValue={field.value}
-                      disabled={position.isLoading}
-                      onValueChange={field.onChange}
-                    >
-                      <FormControl>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select a job level" />
-                        </SelectTrigger>
-                      </FormControl>
-                      {level.data && (
-                        <SelectContent>
-                          {level.data.data.records.length > 0 ? (
-                            level.data.data.records.map((value: any) => (
-                              <SelectItem key={value.id} value={value.id}>
-                                {value.name}
-                              </SelectItem>
-                            ))
-                          ) : (
-                            <SelectEmpty />
-                          )}
-                        </SelectContent>
-                      )}
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </>
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel required>Position Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter position name here" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />  
           ) : (
             <FormField
               control={form.control}

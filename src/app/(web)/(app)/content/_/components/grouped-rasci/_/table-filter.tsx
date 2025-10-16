@@ -46,7 +46,7 @@ export const TableFilter = () => {
       ...(jobLevel.data
         ? [
             {
-              key: "job_level",
+              key: "position",
               label: "By Job Level",
               options: jobLevel.data.data.records.map((value) => ({
                 label: value.name,

@@ -1,11 +1,8 @@
 import { type ColumnDef } from "@tanstack/react-table";
-import { toast } from "sonner";
 import { useMemo } from "react";
 import { useSearchParams } from "next/navigation";
-import { MasterDataActionColumn } from "@altha/core/components/templates/master-data";
 import { useIsMobile } from "@altha/core/hooks/use-is-mobile";
-import { Form } from "./form";
-import { useDeletePosition, usePosition } from "./rpcs";
+import { useGroupedRasciMapping } from "../../../api/rcps";
 
 export const useTable = () => {
   const searchParams = useSearchParams();
@@ -17,8 +14,7 @@ export const useTable = () => {
   const sort = searchParams.get("sort") || undefined;
   const sortBy = searchParams.get("sort_by") || undefined;
 
-  const deletePosition = useDeletePosition();
-  const { data, error, isLoading, isPlaceholderData } = usePosition({
+  const { data, error, isLoading, isPlaceholderData } = useGroupedRasciMapping({
     filter,
     page,
     page_size: pageSize,
@@ -38,66 +34,46 @@ export const useTable = () => {
         cell: ({ row }) => <span>{row.index + 1}</span>,
       },
       {
+        meta: { label: "level_activities" },
+        accessorKey: "level_activities",
+        header: "Level Activity",
+        cell: ({ row }) => {
+          return (
+            <div>
+              {row.original.level_activities.index} - {row.original.level_activities.level}
+            </div>
+          );
+        },
+      },
+      {
         meta: { label: "position" },
-        size: 600,
         accessorKey: "position",
-        header: "Position",
+        header: "Position Name",
         cell: ({ row }) => {
           return (
             <div>
-              {row.original.name}
+              {row.original.position.name}
             </div>
           );
         },
       },
       {
-        meta: { label: "level" },
-        accessorKey: "level",
-        header: "Level",
+        meta: { label: "rasci" },
+        accessorKey: "rasci",
+        header: "RASCI Activity",
         cell: ({ row }) => {
           return (
             <div>
-              {row.original.level.name}
+              {row.original.rasci}
             </div>
-          );
-        },
-      },
-      {
-        enableHiding: false,
-        enableSorting: false,
-        meta: { action: true, fixed: "right" },
-        size: 50,
-        id: "actions",
-        cell: ({ row }) => {
-          return (
-            <MasterDataActionColumn
-              form={Form}
-              initialData={row.original}
-              onDelete={() => {
-                deletePosition.mutate(
-                  { id: row.original.id },
-                  {
-                    onError(error) {
-                      toast.error("Failed to delete job position", {
-                        description: error.message,
-                        descriptionClassName: "!text-destructive",
-                      });
-                    },
-                    onSuccess() {
-                      toast.success("Job position deleted successfully");
-                    },
-                  }
-                );
-              }}
-            />
           );
         },
       },
     ],
-    [deletePosition, isMobile]
+    [isMobile]
   );
 
-  const position = useMemo(() => {
+  const rasciMapping = useMemo(() => {
     if (!data) return [];
 
     const { records } = data.data;
@@ -106,7 +82,7 @@ export const useTable = () => {
   
   return {
     columns,
-    data: position || [],
+    data: rasciMapping || [],
     error,
     loading: isLoading || isPlaceholderData,
     pagination: {

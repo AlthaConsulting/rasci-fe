@@ -43,7 +43,8 @@ export default function PageLevelActivities() {
               placeholder: "Search level activities...",
             },
             pagination,
-          }}
+            addData: { enabled: true },
+          } as any }
           error={error}
           loading={loading}
         />

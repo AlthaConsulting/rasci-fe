@@ -15,7 +15,7 @@ export default async function Layout({
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div className="flex flex-col min-h-screen">
         <AppHeader />
-        <main className="flex-1 flex items-center justify-center p-4 py-5 md:p-8 md:pt-6 lg:p-16 lg:pt-8">
+        <main className="flex-grow px-5 py-5 md:p-8 md:pt-6 lg:pt-8">
           {children}
         </main>
         <AppFooter />

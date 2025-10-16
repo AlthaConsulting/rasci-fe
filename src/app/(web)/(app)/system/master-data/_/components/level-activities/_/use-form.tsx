@@ -86,10 +86,10 @@ export const useForm = ({
       
       mutation.mutate(payload, {
         onError(error: any) {
-          toast.error(
+          toast.info(
             `Failed to ${isEditing ? "update" : "create"} level activity`,
             {
-              description: error.response?.data.errors?.[0]?.message,
+              description: "Data already exist!",
             }
           );
         },

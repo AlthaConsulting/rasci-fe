@@ -150,7 +150,7 @@ export interface DataTableProps<TData, TValue = unknown>
 }
 
 export function DataTable<TData, TValue>({
-  form: Form,
+  form,
   api,
   columns,
   controls = {
@@ -159,6 +159,7 @@ export function DataTable<TData, TValue>({
     filter: { enabled: false },
     column: { enabled: false },
     rowSelection: { enabled: false },
+    addData: { enabled: false },
   },
   data,
   error,
@@ -172,6 +173,7 @@ export function DataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [open, setOpen] = useState<boolean>(false);
 
+  const Form = form ?? null;
   const table = useReactTable({
     data,
     columns,
@@ -262,26 +264,28 @@ export function DataTable<TData, TValue>({
             />
           )}
           
-          <div className="flex items-center gap-3">
-            {/* Tombol New Entry */}
-            <AlertDrawer open={open} onOpenChange={setOpen}>
-              <AlertDrawerTrigger asChild>
-                <Button>
-                  <PlusIcon />
-                  New Entry
-                </Button>
-              </AlertDrawerTrigger>
-              <AlertDrawerContent>
-                <Form onSubmit={() => setOpen(false)} />
-              </AlertDrawerContent>
-            </AlertDrawer>
+          {controls.addData?.enabled && Form && (
+            <div className="flex items-center gap-3">
+              {/* Tombol New Entry */}
+              <AlertDrawer open={open} onOpenChange={setOpen}>
+                <AlertDrawerTrigger asChild>
+                  <Button>
+                    <PlusIcon />
+                    New Entry
+                  </Button>
+                </AlertDrawerTrigger>
+                <AlertDrawerContent>
+                  <Form onSubmit={() => setOpen(false)} />
+                </AlertDrawerContent>
+              </AlertDrawer>
 
-            {controls.rowSelection?.enabled &&
-              table.getSelectedRowModel().rows.length > 0 &&
-              controls.rowSelection.children(table)}
-            {controls.column?.enabled && <DataTableViewOptions table={table} />}
-            {controls.action?.enabled && controls.action.children}
-          </div>
+              {controls.rowSelection?.enabled &&
+                table.getSelectedRowModel().rows.length > 0 &&
+                controls.rowSelection.children(table)}
+              {controls.column?.enabled && <DataTableViewOptions table={table} />}
+              {controls.action?.enabled && controls.action.children}
+            </div>
+          )}
         </div>
       )}
       <div
