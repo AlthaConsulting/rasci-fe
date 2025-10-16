@@ -1,8 +1,6 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import BackgroundImage from "../../../public/images/hero-bg.jpg";
 import { useCallback, useMemo } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useGetAuthenticationStatus } from "@altha/app/(auth)/_/hooks/use-get-authentication-status";
@@ -15,12 +13,8 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Logo } from "./ui/logo";
@@ -33,13 +27,9 @@ import {
   SheetTrigger,
 } from "./ui/sheet";
 import {
-  Bell,
-  Briefcase,
-  ClipboardText,
   Gear,
   List,
   SignOut,
-  User,
 } from "@phosphor-icons/react";
 
 export const AppHeader = () => {
@@ -77,7 +67,6 @@ function PublicHeader() {
   return (
     <header className="relative w-full h-auto">
       <PublicLinks />
-      {/* <HeroBackground /> */}
     </header>
   );
 }
@@ -86,16 +75,16 @@ const useUrls = () => {
   const urls = useMemo(
     () => [
       {
-        label: "Home",
+        label: "Dashboard",
         href: "/",
       },
       {
-        label: "Online Test",
-        href: "/tests",
+        label: "Generated Description",
+        href: "/system/generated-ai",
       },
       {
-        label: "Assignment",
-        href: "/assignment",
+        label: "Master Data",
+        href: "/system/master-data",
       },
     ],
     []
@@ -119,7 +108,7 @@ const MobileLinks = () => {
       </SheetTrigger>
       <SheetContent side="left">
         <SheetHeader>
-          <SheetTitle className="text-left">My Account</SheetTitle>
+          <SheetTitle className="text-left">Menu</SheetTitle>
           <SheetDescription className="sr-only">
             Explore Menu in Your Account
           </SheetDescription>
@@ -196,35 +185,11 @@ export const UserDropdownMenu = () => {
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem onSelect={() => router.push("/account/profile")}>
-            <User />
-            My Profile
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => router.push("/account/settings")}>
+          <DropdownMenuItem onSelect={() => router.push("/system/master-data")}>
             <Gear />
-            My Settings
+            Master Data
             <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
           </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem onSelect={() => router.push("/account/my-application")}>
-            <Briefcase />
-            My Applications
-          </DropdownMenuItem>
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>
-              <ClipboardText />
-              My Tasks
-            </DropdownMenuSubTrigger>
-            <DropdownMenuPortal>
-              <DropdownMenuSubContent>
-                <DropdownMenuItem onSelect={() => router.push("/tests")}>Online Tests</DropdownMenuItem>
-                <DropdownMenuItem onSelect={() => router.push("/assignment")}>Assignments</DropdownMenuItem>
-              </DropdownMenuSubContent>
-            </DropdownMenuPortal>
-          </DropdownMenuSub>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={() => logout.mutate()}>
@@ -251,7 +216,7 @@ function PrivateHeader() {
             <PrivateLinks />
           </div>
           <div className="flex items-center gap-4 md:gap-5 lg:gap-8">
-            <Bell className="size-6" />
+            {/* <Bell className="size-6" /> */}
             <UserDropdownMenu />
           </div>
         </div>

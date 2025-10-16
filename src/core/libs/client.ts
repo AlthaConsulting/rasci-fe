@@ -1,21 +1,18 @@
 import axios, { InternalAxiosRequestConfig } from "axios";
 
 export enum Client {
-  Career = "Career",
-  HC = "HC",
+  Rasci = "RASCI",
 }
 
 export const getClientUrl = (client: Client) => {
-  const API_CAREER_URL =
-    process.env.NEXT_PUBLIC_API_CAREER_URL || "http://localhost:8080";
-  const API_HC_URL =
-    process.env.NEXT_PUBLIC_API_HC_URL || "http://localhost:8000";
+  const API_RASCI_URL =
+    process.env.NEXT_PUBLIC_API_RASCI_URL || "http://localhost:8000";
 
-  return client === Client.HC ? API_HC_URL : API_CAREER_URL;
+  return API_RASCI_URL;
 };
 
 export const makeApiClient = (
-  client: Client = Client.HC,
+  client: Client = Client.Rasci,
   options?: {
     baseUrl?: string;
   }
