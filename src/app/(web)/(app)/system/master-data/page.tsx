@@ -40,7 +40,15 @@ export default async function Page({ searchParams }: PageProps) {
   return (
     <div className="container mx-auto">
       <section className="flex flex-col lg:flex-row gap-5 lg:gap-8 py-8">
-        <AppTabs defaultTab={tab} tabs={tabs} vertical />
+        {/* <AppTabs defaultTab={tab} tabs={tabs} vertical /> */}
+        <div className="block lg:hidden">
+          {/* Mobile Version */}
+          <AppTabs defaultTab={tab} tabs={tabs} />
+        </div>
+        <div className="hidden lg:block w-full">
+          {/* Deskstop Version */}
+          <AppTabs defaultTab={tab} tabs={tabs} vertical />
+        </div>
       </section>
     </div>
   );

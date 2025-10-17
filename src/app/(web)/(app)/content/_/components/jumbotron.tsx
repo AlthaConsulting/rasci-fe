@@ -1,30 +1,48 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@altha/core/components/ui/button";
-import { ChevronDown, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import {
-  Select,
-  SelectContent,
-  SelectEmpty,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@altha/core/components/ui/select";
+  Combobox,
+  ComboboxTrigger,
+  ComboboxValue,
+  ComboboxContent,
+  ComboboxInput,
+  ComboboxList,
+  ComboboxItem,
+  ComboboxGroup,
+} from "@altha/core/components/ui/combobox";
 import { usePosition } from "../../../system/master-data/_/components/position/_/rpcs";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 export default function Jumbotron() {
   const [selectedJob, setSelectedJob] = useState("");
+  const [recentlySearched, setRecentlySearched] = useState<string[]>([]);
   const position = usePosition({ page: "1", page_size: "100" });
   const router = useRouter();
 
-  const recentlySearched = [
-    "Internal Audit Division Head",
-    "Corporate Secretary & Protocol Division Head",
-    "Secretarial Unit Head",
-  ];
+  useEffect(() => {
+    const saved = localStorage.getItem("recentlySearchedJobs");
+    if (saved) setRecentlySearched(JSON.parse(saved));
+  }, []);
+
+  const handleSelectJob = (value: string) => {
+    setSelectedJob(value);
+
+    const jobName =
+      position.data?.data?.records?.find((v: any) => String(v.id) === value)
+        ?.name ?? "";
+
+    if (!jobName) return;
+
+    setRecentlySearched((prev) => {
+      const updated = [jobName, ...prev.filter((j) => j !== jobName)].slice(0, 3);
+      localStorage.setItem("recentlySearchedJobs", JSON.stringify(updated));
+      return updated;
+    });
+  };
 
   const handleGenerate = () => {
     if (!selectedJob) {
@@ -33,6 +51,12 @@ export default function Jumbotron() {
     }
     router.push(`/system/rasci-matrix?filter=job_position:${selectedJob}`)
   };
+
+  const comboItems =
+    position.data?.data?.records?.map((v: any) => ({
+      label: v.name,
+      value: String(v.id),
+    })) ?? [];
 
   return (
     <div className="w-full rounded-2xl bg-gradient-to-r from-blue-100 via-blue-200 to-blue-400 p-10 text-center">
@@ -44,35 +68,41 @@ export default function Jumbotron() {
       </p>
 
       {/* Search Input */}
-      <div className="flex justify-center items-center gap-3 mb-8">
-        <div className="relative w-[380px]">
-          <Select
-            value={selectedJob}
-            onValueChange={setSelectedJob}
-            disabled={position.isLoading}
+      <div className="flex flex-col sm:flex-row justify-center items-center gap-3 mb-8">
+        <div className="relative w-full sm:w-[380px]">
+          <Combobox
+            list={comboItems}
+            defaultValue={selectedJob}
+            onValueChange={handleSelectJob}
           >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Choose job position" />
-            </SelectTrigger>
-            {position.data && (
-              <SelectContent>
-                {position.data.data.records.length > 0 ? (
-                  position.data.data.records.map((value: any) => (
-                    <SelectItem key={value.id} value={String(value.id)}>
-                      {value.name}
-                    </SelectItem>
-                  ))
-                ) : (
-                  <SelectEmpty />
-                )}
-              </SelectContent>
-            )}
-          </Select>
+            <ComboboxTrigger>
+              <ComboboxValue placeholder="Choose job position" />
+            </ComboboxTrigger>
+
+            <ComboboxContent>
+              <ComboboxInput placeholder="Search position by name" />
+              <ComboboxList>
+                <ComboboxGroup>
+                  {comboItems.length > 0 ? (
+                    comboItems.map((value) => (
+                      <ComboboxItem key={value.value} value={value.value}>
+                        {value.label}
+                      </ComboboxItem>
+                    ))
+                  ) : (
+                    <div className="px-3 py-2 text-sm text-muted-foreground">
+                      No job positions found
+                    </div>
+                  )}
+                </ComboboxGroup>
+              </ComboboxList>
+            </ComboboxContent>
+          </Combobox>
         </div>
 
         <Button
           onClick={handleGenerate}
-          className="bg-blue-900 hover:bg-blue-800 text-white flex items-center gap-2 px-5 py-3 rounded-md"
+          className="bg-blue-900 hover:bg-blue-800 text-white flex items-center justify-center gap-2 px-5 py-3 rounded-md w-full sm:w-auto"
         >
           <Sparkles className="w-4 h-4" />
           Generate Job Description
@@ -80,14 +110,22 @@ export default function Jumbotron() {
       </div>
 
       {/* Recently searched */}
-      {position.data && position.data.data.records.length > 0 && (
+      {recentlySearched.length > 0 && (
         <div>
           <p className="text-gray-600 mb-3 font-medium">Recently searched</p>
           <div className="flex justify-center flex-wrap gap-3">
             {recentlySearched.map((job) => (
               <button
                 key={job}
-                disabled
+                onClick={() => {
+                  const jobObj = comboItems.find((i) => i.label === job);
+                  if (jobObj) {
+                    setSelectedJob(jobObj.value);
+                    router.push(
+                      `/system/rasci-matrix?filter=job_position:${jobObj.value}`
+                    );
+                  }
+                }}
                 className="bg-blue-950 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-blue-900 transition"
               >
                 {job}

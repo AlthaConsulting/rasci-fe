@@ -71,7 +71,7 @@ function ComboboxTrigger({
     <PopoverTrigger asChild data-slot="combobox-trigger" {...props}>
       <Button
         className={cn(
-          "w-full justify-between text-left font-normal hover:bg-transparent text-base md:text-sm h-9",
+          "w-full justify-between text-left font-normal hover:bg-gray-50 text-base md:text-sm h-9",
           props.className
         )}
         role="combobox"
@@ -116,6 +116,7 @@ function ComboboxContent({
     </PopoverContent>
   );
 }
+
 
 function ComboboxInput({
   ...props
