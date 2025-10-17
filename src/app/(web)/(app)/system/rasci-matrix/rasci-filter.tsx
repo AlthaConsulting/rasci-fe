@@ -34,7 +34,7 @@ export function RasciFilterBar({ onSearchChange, onFilterChange }: RasciFilterBa
   };
 
   return (
-    <div className="flex items-center gap-4 justify-between border rounded-lg px-4 py-3 mb-5">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border rounded-lg px-4 py-3 mb-5 gap-4">
       <div className="flex items-center gap-2 flex-1">
         <Search className="w-4 h-4 text-gray-400" />
         <input
@@ -49,7 +49,7 @@ export function RasciFilterBar({ onSearchChange, onFilterChange }: RasciFilterBa
           className="w-full bg-transparent outline-none text-sm placeholder:text-gray-400"
         />
       </div>
-      <div className="h-5 w-px bg-gray-200" />
+      <div className="hidden sm:block h-5 w-px bg-gray-200" />
       <div className="flex items-center gap-2">
         <span className="text-sm text-gray-500">Filter</span>
         {rasciKeys.map((key) => (
@@ -67,7 +67,7 @@ export function RasciFilterBar({ onSearchChange, onFilterChange }: RasciFilterBa
           </button>
         ))}
       </div>
-      <div className="h-5 w-px bg-gray-200" />
+      <div className="hidden sm:block h-5 w-px bg-gray-200" />
       <div className="flex items-center gap-2">
         <span className="text-sm text-gray-500">Levels</span>
         {levelKeys.map((key) => (

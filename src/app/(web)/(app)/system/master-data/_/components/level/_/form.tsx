@@ -37,12 +37,12 @@ export const Form = ({
     <div className="flex flex-col gap-4">
       <AlertDrawerHeader>
         <AlertDrawerTitle>
-          {!isEditing ? "Add Position" : "Edit Position"}
+          {!isEditing ? "Add Level" : "Edit Level"}
         </AlertDrawerTitle>
         <AlertDrawerDescription>
           {!isEditing
-            ? "Add new position to master data"
-            : "Edit current Position details in master data."}
+            ? "Add new level to master data"
+            : "Edit current Level details in master data."}
         </AlertDrawerDescription>
       </AlertDrawerHeader>
       <FormProvider {...form}>
@@ -88,9 +88,9 @@ export const Form = ({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel required>Position Name</FormLabel>
+                  <FormLabel required>Level Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter position name here" {...field} />
+                    <Input placeholder="Enter level name here" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

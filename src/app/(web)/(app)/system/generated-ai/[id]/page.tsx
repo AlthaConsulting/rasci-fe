@@ -61,7 +61,7 @@ export default function PageAiGenerated() {
               )}
             >
               <DownloadIcon className="w-4 h-4" />
-              Export Job Description
+              <span className="hidden lg:inline">Export Job Description</span>
             </Button>
           </div>
           <CardDescription>

@@ -160,12 +160,12 @@ export default function PageRasciMatrix() {
               {isGenerating ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin " />
-                  Generating AI Description...
+                  <span className="hidden lg:inline">Generating AI Description...</span>
                 </>
               ) : (
                 <>
                   <Sparkles className="w-4 h-4" />
-                  Generate Job Description
+                  <span className="hidden lg:inline">Generate Job Description</span>
                 </>
               )}
             </Link>
@@ -176,7 +176,13 @@ export default function PageRasciMatrix() {
                 <button
                   key={key}
                   disabled
-                  className={`${color} border bg-transparent mr-2 px-4 py-2 rounded-md text-sm font-medium transition`}
+                  className={cn(
+                    color,
+                    "border bg-transparent rounded-md font-medium transition",
+                    "text-xs px-2 py-1",       // default mobile
+                    "sm:text-sm sm:px-3 sm:py-1.5", // default tab
+                    "lg:px-4 lg:py-2 lg:mr-2"          // default dekstop
+                  )}
                 >
                   {key}: {rasciData?.total?.[key] ?? 0}
                 </button>
