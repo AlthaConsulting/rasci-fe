@@ -45,6 +45,7 @@ export const AppTabs: React.FC<AppTabsProps> = ({
   const handleTabChange = (value: string) => {
     const params = new URLSearchParams(searchParams);
     params.set("tab", value);
+    params.delete("page");
     router.push(`?${params.toString()}`, { scroll: false });
   };
 

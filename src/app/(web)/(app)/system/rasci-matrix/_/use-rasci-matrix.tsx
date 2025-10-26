@@ -11,6 +11,7 @@ export const useRasciMatrix = () => {
   const searchParams = useSearchParams();
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedResult, setGeneratedResult] = useState<any>(null);
+  const [showWaitModal, setShowWaitModal] = useState(false);
 
   const filter = searchParams.get("filter") || undefined;
   const page = searchParams.get("page") || "1";
@@ -39,7 +40,15 @@ export const useRasciMatrix = () => {
     setIsGenerating(true);
     setGeneratedResult(null);
 
+    const waitTimeout = setTimeout(() => {
+      setShowWaitModal(true);
+    }, 500);
+
     try {
+      const filteredRecords: any = {};
+      if (records.detail?.R) filteredRecords.R = records.detail.R;
+      if (records.detail?.A) filteredRecords.A = records.detail.A;
+
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_RASCI_URL}/system/generate_ai_jobdesc`, {
         method: "POST",
         credentials: "include",
@@ -49,7 +58,7 @@ export const useRasciMatrix = () => {
         },
         body: JSON.stringify({
           position_id: position?.id,
-          records: records.detail,
+          records: filteredRecords,
         }),
       });
 
@@ -57,12 +66,16 @@ export const useRasciMatrix = () => {
       if (!response.ok) throw new Error(result.error || "Failed to generate job description");
 
       setGeneratedResult(result);
-      router.push(`/system/generated-ai/${result.id}`); 
-      toast.success("Job Description Successfully Generated");
+      // router.push(`/system/generated-ai/${result.id}`); 
+      toast.success("Job Description Successfully Generated", {
+        description: "Access the Generated Description menu to view the details.",
+      });
     } catch (err: any) {
       console.error("Error generating job description:", err);
       throw err;
     } finally {
+      clearTimeout(waitTimeout); 
+      setTimeout(() => setShowWaitModal(false), 300);
       setIsGenerating(false);
     }
   };
@@ -81,5 +94,7 @@ export const useRasciMatrix = () => {
     handleGenerateJobDesc,
     isGenerating,
     generatedResult,
+    showWaitModal,
+    setShowWaitModal,
   };
 };

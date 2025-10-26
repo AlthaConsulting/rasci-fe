@@ -27,7 +27,7 @@ export const apiHcClient = axios.create({
 
 export const apiRasciClient = axios.create({
   baseURL: process.env.API_RASCI_URL || "http://localhost:8000",
-  timeout: +(process.env.API_TIMEOUT || 10000),
+  timeout: +(process.env.API_TIMEOUT || 60000),
   withCredentials: true,
 });
 

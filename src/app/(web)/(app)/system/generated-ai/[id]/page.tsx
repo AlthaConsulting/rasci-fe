@@ -16,21 +16,27 @@ import { useDetailPosition } from "./_/use-generated-ai";
 import { Button, buttonVariants } from "@altha/core/components/ui/button";
 import { cn } from "@altha/core/libs/utils";
 import html2pdf from "html2pdf.js";
-import { DownloadIcon, Sparkles, Edit } from "lucide-react";
+import { DownloadIcon, Sparkles, Edit, FileEdit } from "lucide-react";
 import { useState } from "react";
 import { FormJobDescription } from "./_/components/form-job-description";
 import { FormJobPurpose } from "./_/components/form-job-purpose";
 import { FormKpi } from "./_/components/form-job-kpi";
+import { FormKeyResponsibility } from "./_/components/form-key-reponsibility";
+import { FormJobOutput } from "./_/components/form-job-output";
 
 export default function PageAiGenerated() {
   const { data, error, loading } = useDetailPosition();
   const [openPurpose, setOpenPurpose] = useState(false);
+  const [openResponsibility, setOpenResponsibility] = useState(false);
   const [openDescription, setOpenDescription] = useState(false);
   const [openKpi, setOpenKpi] = useState(false);
+  const [openOutput, setOpenOutput] = useState(false);
 
   const handleExportPDF = async () => {
-    const editButtons = document.querySelectorAll<HTMLButtonElement>(".edit-button");
-    editButtons.forEach((btn) => (btn.style.display = "none"));
+    const hiddenButtons = document.querySelectorAll<HTMLButtonElement>(
+      ".edit-button, .ai-status-button"
+    );
+    hiddenButtons.forEach((btn) => (btn.style.display = "none"));
 
     const element = document.getElementById("job-description-content") as HTMLElement | null;
     if (!element) return; 
@@ -44,7 +50,7 @@ export default function PageAiGenerated() {
     };
 
     await html2pdf().from(element).set(opt).save();
-    editButtons.forEach((btn) => (btn.style.display = ""));
+    hiddenButtons.forEach((btn) => (btn.style.display = ""));
   };
 
   return (
@@ -64,17 +70,6 @@ export default function PageAiGenerated() {
               <span className="hidden lg:inline">Export Job Description</span>
             </Button>
           </div>
-          <CardDescription>
-            <button
-              disabled
-              className={cn(
-                "flex items-center rounded-full text-blue-900 border-blue-900 border mb-4 px-3 py-1 gap-2 text-sm font-medium"
-              )}
-            >
-              <Sparkles className="w-3 h-3" />
-              AI Generated
-            </button>
-          </CardDescription>
         </CardHeader>
         <CardContent className="!-mt-0 flex flex-col lg:flex-row gap-6 relative">
 
@@ -92,7 +87,28 @@ export default function PageAiGenerated() {
             >
               <CardHeader className="bg-gray-100 rounded-md !p-0 !px-3 !py-3">
                 <CardTitle className="flex items-center justify-between text-sm font-semibold">
-                  <span className="text-gray-600">Job Purpose</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-gray-600">Job Purpose</span>
+                    {data?.is_edited_purpose ? (
+                      <button disabled
+                        className={cn(
+                          "ai-status-button flex items-center rounded-full text-blue-900 border border-blue-900 px-3 py-1 gap-2 text-sm font-medium"
+                        )}
+                      >
+                        <FileEdit className="w-3 h-3" />
+                        Edited
+                      </button>
+                    ) : (
+                      <button disabled
+                        className={cn(
+                          "ai-status-button flex items-center rounded-full text-blue-900 border border-blue-900 px-3 py-1 gap-2 text-sm font-medium"
+                        )}
+                      >
+                        <Sparkles className="w-3 h-3" />
+                        AI Generated
+                      </button>
+                    )}
+                  </div>
                   <span className="text-xs text-gray-500">
                     <AlertDrawer open={openPurpose} onOpenChange={setOpenPurpose}>
                       <AlertDrawerTrigger asChild>
@@ -102,7 +118,7 @@ export default function PageAiGenerated() {
                         </div>
                       </AlertDrawerTrigger>
 
-                      <AlertDrawerContent className="!max-w-3xl !w-full">
+                      <AlertDrawerContent className="!max-w-6xl !w-full">
                         <FormJobPurpose
                           initialData={data}
                           onSubmit={() => setOpenPurpose(false)}
@@ -130,6 +146,76 @@ export default function PageAiGenerated() {
               </CardContent>
             </Card>
 
+            {/* Key Responsibility */}
+            <Card 
+              style={{
+                pageBreakInside: "avoid",
+                breakInside: "avoid",
+                marginBottom: "24px",
+              }}
+              id="key-responsibility"
+            >
+              <CardHeader className="bg-gray-100 rounded-md !p-0 !px-3 !py-3">
+                <CardTitle className="flex items-center justify-between text-sm font-semibold">
+                  <div className="flex items-center gap-3">
+                    <span className="text-gray-600">Key Responsibility</span>
+                    {data?.is_edited_responsibility ? (
+                      <button disabled
+                        className={cn(
+                          "ai-status-button flex items-center rounded-full text-blue-900 border border-blue-900 px-3 py-1 gap-2 text-sm font-medium"
+                        )}
+                      >
+                        <FileEdit className="w-3 h-3" />
+                        Edited
+                      </button>
+                    ) : (
+                      <button disabled
+                        className={cn(
+                          "ai-status-button flex items-center rounded-full text-blue-900 border border-blue-900 px-3 py-1 gap-2 text-sm font-medium"
+                        )}
+                      >
+                        <Sparkles className="w-3 h-3" />
+                        AI Generated
+                      </button>
+                    )}
+                  </div>
+                  <span className="text-xs text-gray-500">
+                    <AlertDrawer open={openResponsibility} onOpenChange={setOpenResponsibility}>
+                      <AlertDrawerTrigger asChild>
+                        <div className="edit-button flex gap-2 items-center cursor-pointer">
+                          <Edit className="w-4 h-4" />
+                          <span>Edit</span>
+                        </div>
+                      </AlertDrawerTrigger>
+
+                      <AlertDrawerContent className="!max-w-6xl !w-full">
+                        <FormKeyResponsibility
+                          initialData={data}
+                          onSubmit={() => setOpenResponsibility(false)}
+                        />
+                      </AlertDrawerContent>
+                    </AlertDrawer>
+                  </span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="!p-3 !-mt-0">
+                <div className="py-1">
+                  {data?.key_responsibility ? (
+                    /<\/?[a-z][\s\S]*>/i.test(data?.key_responsibility) ? (
+                      <div
+                        className="prose prose-sm max-w-none"
+                        dangerouslySetInnerHTML={{ __html: data?.key_responsibility }}
+                      />
+                    ) : (
+                      <span>{data?.key_responsibility}</span>
+                    )
+                  ) : (
+                    <span className="text-gray-400 italic">No key responsibility available</span>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Job Description */}
             <Card 
               style={{
@@ -141,7 +227,28 @@ export default function PageAiGenerated() {
             >
               <CardHeader className="bg-gray-100 rounded-md !p-0 !px-3 !py-3">
                 <CardTitle className="flex items-center justify-between text-sm font-semibold">
-                  <span className="text-gray-600">Job Description</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-gray-600">Job Description</span>
+                    {data?.is_edited_description ? (
+                      <button disabled
+                        className={cn(
+                          "ai-status-button flex items-center rounded-full text-blue-900 border border-blue-900 px-3 py-1 gap-2 text-sm font-medium"
+                        )}
+                      >
+                        <FileEdit className="w-3 h-3" />
+                        Edited
+                      </button>
+                    ) : (
+                      <button disabled
+                        className={cn(
+                          "ai-status-button flex items-center rounded-full text-blue-900 border border-blue-900 px-3 py-1 gap-2 text-sm font-medium"
+                        )}
+                      >
+                        <Sparkles className="w-3 h-3" />
+                        AI Generated
+                      </button>
+                    )}
+                  </div>
                   <span className="text-xs text-gray-500">
                     <AlertDrawer open={openDescription} onOpenChange={setOpenDescription}>
                       <AlertDrawerTrigger asChild>
@@ -151,7 +258,7 @@ export default function PageAiGenerated() {
                         </div>
                       </AlertDrawerTrigger>
 
-                      <AlertDrawerContent className="!max-w-3xl !w-full">
+                      <AlertDrawerContent className="!max-w-6xl !w-full">
                         <FormJobDescription
                           initialData={data}
                           onSubmit={() => setOpenDescription(false)}
@@ -190,7 +297,28 @@ export default function PageAiGenerated() {
             >
               <CardHeader className="bg-gray-100 rounded-md !p-0 !px-3 !py-3">
                 <CardTitle className="flex items-center justify-between text-sm font-semibold">
-                  <span className="text-gray-600">KPIs / Success Measures</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-gray-600">Performance Index</span>
+                    {data?.is_edited_kpi ? (
+                      <button disabled
+                        className={cn(
+                          "ai-status-button flex items-center rounded-full text-blue-900 border border-blue-900 px-3 py-1 gap-2 text-sm font-medium"
+                        )}
+                      >
+                        <FileEdit className="w-3 h-3" />
+                        Edited
+                      </button>
+                    ) : (
+                      <button disabled
+                        className={cn(
+                          "ai-status-button flex items-center rounded-full text-blue-900 border border-blue-900 px-3 py-1 gap-2 text-sm font-medium"
+                        )}
+                      >
+                        <Sparkles className="w-3 h-3" />
+                        AI Generated
+                      </button>
+                    )}
+                  </div>
                   <span className="text-xs text-gray-500">
                     <AlertDrawer open={openKpi} onOpenChange={setOpenKpi}>
                       <AlertDrawerTrigger asChild>
@@ -200,7 +328,7 @@ export default function PageAiGenerated() {
                         </div>
                       </AlertDrawerTrigger>
 
-                      <AlertDrawerContent className="!max-w-3xl !w-full">
+                      <AlertDrawerContent className="!max-w-6xl !w-full">
                         <FormKpi
                           initialData={data}
                           onSubmit={() => setOpenKpi(false)}
@@ -228,6 +356,76 @@ export default function PageAiGenerated() {
               </CardContent>
             </Card>
 
+            {/* Job Output */}
+            <Card 
+              style={{
+                pageBreakInside: "avoid",
+                breakInside: "avoid",
+                marginBottom: "24px",
+              }}
+              id="job-output"
+            >
+              <CardHeader className="bg-gray-100 rounded-md !p-0 !px-3 !py-3">
+                <CardTitle className="flex items-center justify-between text-sm font-semibold">
+                  <div className="flex items-center gap-3">
+                    <span className="text-gray-600">Job Output</span>
+                    {data?.is_edited_output ? (
+                      <button disabled
+                        className={cn(
+                          "ai-status-button flex items-center rounded-full text-blue-900 border border-blue-900 px-3 py-1 gap-2 text-sm font-medium"
+                        )}
+                      >
+                        <FileEdit className="w-3 h-3" />
+                        Edited
+                      </button>
+                    ) : (
+                      <button disabled
+                        className={cn(
+                          "ai-status-button flex items-center rounded-full text-blue-900 border border-blue-900 px-3 py-1 gap-2 text-sm font-medium"
+                        )}
+                      >
+                        <Sparkles className="w-3 h-3" />
+                        AI Generated
+                      </button>
+                    )}
+                  </div>
+                  <span className="text-xs text-gray-500">
+                    <AlertDrawer open={openOutput} onOpenChange={setOpenOutput}>
+                      <AlertDrawerTrigger asChild>
+                        <div className="edit-button flex gap-2 items-center cursor-pointer">
+                          <Edit className="w-4 h-4" />
+                          <span>Edit</span>
+                        </div>
+                      </AlertDrawerTrigger>
+
+                      <AlertDrawerContent className="!max-w-6xl !w-full">
+                        <FormJobOutput
+                          initialData={data}
+                          onSubmit={() => setOpenOutput(false)}
+                        />
+                      </AlertDrawerContent>
+                    </AlertDrawer>
+                  </span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="!p-3 !-mt-0">
+                <div className="py-1">
+                  {data?.job_output ? (
+                    /<\/?[a-z][\s\S]*>/i.test(data?.job_output) ? (
+                      <div
+                        className="prose prose-sm max-w-none"
+                        dangerouslySetInnerHTML={{ __html: data?.job_output }}
+                      />
+                    ) : (
+                      <span>{data?.job_output}</span>
+                    )
+                  ) : (
+                    <span className="text-gray-400 italic">No job output available</span>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
           </div>
 
           {/* ====================== STICKY TABLE OF CONTENTS ====================== */}
@@ -239,10 +437,16 @@ export default function PageAiGenerated() {
                   <a href="#job-purpose" className="font-semibold hover:text-blue-900">Job Purpose</a>
                 </li>
                 <li>
+                  <a href="#key-responsibility" className="font-semibold hover:text-blue-900">Key Responsibility</a>
+                </li>
+                <li>
                   <a href="#job-description" className="font-semibold hover:text-blue-900">Job Description</a>
                 </li>
                 <li>
-                  <a href="#kpi" className="font-semibold hover:text-blue-900">KPIs / Success Measures</a>
+                  <a href="#kpi" className="font-semibold hover:text-blue-900">Performance Index</a>
+                </li>
+                <li>
+                  <a href="#job-output" className="font-semibold hover:text-blue-900">Job Output</a>
                 </li>
               </ul>
             </div>

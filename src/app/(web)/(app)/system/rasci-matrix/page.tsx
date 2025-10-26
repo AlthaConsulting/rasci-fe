@@ -16,6 +16,7 @@ import { EmptyState } from "@altha/core/components/ui/empty-state";
 import { useMemo, useState } from "react";
 import { RasciFilterBar } from "./rasci-filter";
 import { toast } from "sonner";
+import WaitModal from "./_/components/wait-modal";
 
 function TreeItem({ item, level = 0 }: { item: any; level?: number }) {
   const outlineColorMap: Record<string, string> = {
@@ -54,7 +55,7 @@ function TreeItem({ item, level = 0 }: { item: any; level?: number }) {
 }
 
 export default function PageRasciMatrix() {
-  const { data, handleGenerateJobDesc, isGenerating, generatedResult } = useRasciMatrix();
+  const { data, handleGenerateJobDesc, isGenerating, generatedResult, showWaitModal, setShowWaitModal } = useRasciMatrix();
   const rasciData = data[0];
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<{ rasci: string[]; levels: string[] }>({
@@ -169,6 +170,10 @@ export default function PageRasciMatrix() {
                 </>
               )}
             </Link>
+            <WaitModal
+              show={showWaitModal}
+              onClose={() => setShowWaitModal(false)}
+            />
           </div>
           <CardDescription>
             <div className="flex flex-wrap gap-2">

@@ -19,7 +19,7 @@ import { RichTextEditor } from "@altha/core/components/ui/rich-text-editor";
 import { useForm } from "../hooks/use-form";
 import { useEffect } from "react";
 
-export const FormJobPurpose = ({
+export const FormKeyResponsibility = ({
   initialData,
   onSubmit
 }: {
@@ -36,17 +36,17 @@ export const FormJobPurpose = ({
   });
 
   useEffect(() => {
-    form.setValue("is_edited_purpose", true);
+    form.setValue("is_edited_responsibility", true);
   }, [form]);
   
   return (
     <div className="flex flex-col gap-4">
       <AlertDrawerHeader>
         <AlertDrawerTitle>
-          Edit Job Purpose
+          Edit Key Reponsibility
         </AlertDrawerTitle>
         <AlertDrawerDescription>
-          Modify the job purpose in the form fields below.
+          Modify the key responsibility in the form fields below.
         </AlertDrawerDescription>
       </AlertDrawerHeader>
       <FormProvider {...form}>
@@ -57,7 +57,7 @@ export const FormJobPurpose = ({
           <div className="flex flex-col lg:flex-row item-start gap-2 mb-4 mt-4">
             <FormField
               control={form.control}
-              name={"job_purpose"}
+              name={"key_responsibility"}
               render={({ field }) => (
                 <FormItem className="flex-1">
                   <FormControl>
@@ -65,7 +65,7 @@ export const FormJobPurpose = ({
                       editable={!field.disabled}
                       onBlur={field.onBlur}
                       onChange={field.onChange}
-                      placeholder="Input job purpose here"
+                      placeholder="Input key responsibility here"
                       throttleDelay={200}
                       value={field.value}
                     />
