@@ -66,9 +66,11 @@ export const useTable = () => {
         accessorKey: "description",
         header: "Activity",
         cell: ({ row }) => {
+          const desc = row.original.description || "";
+          const shortDesc = desc.length > 100 ? desc.slice(0, 100) + "..." : desc;
           return (
-            <div>
-              {row.original.description}
+            <div title={desc}>
+              {shortDesc}
             </div>
           );
         },

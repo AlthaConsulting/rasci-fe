@@ -17,6 +17,7 @@ import {
 } from "@altha/core/components/ui/form";
 import { RichTextEditor } from "@altha/core/components/ui/rich-text-editor";
 import { useForm } from "../hooks/use-form";
+import { useEffect } from "react";
 
 export const FormKpi = ({
   initialData,
@@ -33,15 +34,19 @@ export const FormKpi = ({
     initialData,
     onSubmit,
   });
+
+  useEffect(() => {
+    form.setValue("is_edited_kpi", true);
+  }, [form]);
   
   return (
     <div className="flex flex-col gap-4">
       <AlertDrawerHeader>
         <AlertDrawerTitle>
-          Edit KPIs / Success Measures
+          Edit Performance Index
         </AlertDrawerTitle>
         <AlertDrawerDescription>
-          Modify the KPIs / Success Measures in the form fields below.
+          Modify the performance index in the form fields below.
         </AlertDrawerDescription>
       </AlertDrawerHeader>
       <FormProvider {...form}>
@@ -49,7 +54,6 @@ export const FormKpi = ({
           className="flex flex-col gap-6"
           onSubmit={form.handleSubmit(submitHandler)}
         >
-          
           <div className="flex flex-col lg:flex-row item-start gap-2 mb-4 mt-4">
             <FormField
               control={form.control}
