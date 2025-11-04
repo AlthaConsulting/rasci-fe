@@ -68,7 +68,7 @@ export const useTable = () => {
       {
         meta: { label: "support" },
         accessorKey: "support",
-        header: "Supoort",
+        header: "Support",
         cell: ({ row }) => {
           return (
             <div>
