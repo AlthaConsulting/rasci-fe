@@ -86,9 +86,16 @@ export const rowSelectionColumnDef = <TData,>(): ColumnDef<TData> => ({
   header: ({ table }) => (
     <Checkbox
       aria-label="Select all"
+      // checked={
+      //   table.getIsAllPageRowsSelected() ||
+      //   (table.getIsSomePageRowsSelected() && "indeterminate")
+      // }
       checked={
-        table.getIsAllPageRowsSelected() ||
-        (table.getIsSomePageRowsSelected() && "indeterminate")
+        table.getIsAllPageRowsSelected()
+          ? true
+          : table.getIsSomePageRowsSelected()
+          ? "indeterminate"
+          : false
       }
       className="translate-y-0.5"
       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
@@ -142,6 +149,7 @@ export interface DataTableProps<TData, TValue = unknown>
     rowSelection?:
       | ({ enabled: false } & Partial<RowSelectionControl<TData>>)
       | ({ enabled: true } & RowSelectionControl<TData>);
+    addData?: { enabled: boolean }
   };
   data: TData[];
   error?: Error | null;
