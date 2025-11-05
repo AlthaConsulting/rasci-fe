@@ -1,45 +1,17 @@
-"use client";
+import { Suspense } from "react";
+import { Loader2 } from "lucide-react";
+import PageGroupedRasci from "./page-client";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@altha/core/components/ui/card";
-import { useTable } from "./_/use-table";
-import { DataTable } from "@altha/core/components/ui/data-table";
-
-export default function PageGroupedRasci() {
-  const { columns, data, error, loading, pagination, params } = useTable();
-
+export default function Page() {
   return (
-    <div>
-      <Card>
-        <CardHeader>
-          <CardTitle>Job Positions</CardTitle>
-          <CardDescription>
-            Job positions overall view with rasci mapping.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <DataTable
-            form={null}
-            data={data}
-            columns={columns}
-            controls={{
-              filter: {
-                enabled: true,
-                keyword: params.q || "",
-                placeholder: "Search data...",
-              },
-              pagination,
-            }}
-            error={error}
-            loading={loading}
-          />
-        </CardContent>
-      </Card>
-    </div>
+    <Suspense
+      fallback={
+        <div className="flex justify-center items-center min-h-[60vh]">
+          <Loader2 className="w-8 h-8 text-blue-900 animate-spin" />
+        </div>
+      }
+    >
+      <PageGroupedRasci />
+    </Suspense>
   );
 }
