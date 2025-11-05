@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@altha/core/components/ui/card";
-import { Form } from "./_/form";
+// import { Form } from "./_/form";
 import { useTable } from "./_/use-table";
 import { DataTable } from "@altha/core/components/ui/data-table";
 
@@ -24,7 +24,7 @@ export default function PageGroupedRasci() {
       </CardHeader>
       <CardContent>
         <DataTable
-          form={Form}
+          form={""}
           data={data}
           columns={columns}
           controls={{

@@ -65,7 +65,7 @@ export const useRegisterForm = (option: UseRegisterFormOption) => {
             const { status } = result;
             if (status === 400) {
               const { errors } = result;
-              return highlightApiError(errors).from(form);
+              // return highlightApiError(errors).from(form);
             }
 
             if (status === 401) {
