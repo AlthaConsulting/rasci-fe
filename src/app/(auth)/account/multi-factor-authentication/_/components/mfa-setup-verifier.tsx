@@ -48,7 +48,7 @@ export const MfaSetupVerifier = ({
               const { status } = result;
               if (status === 400) {
                 const { errors } = result;
-                return errors.forEach((error) => toast.error(error.message));
+                return errors.forEach((error) => toast.error("Error Occured"));
               }
 
               if (status === 401) {
@@ -79,7 +79,7 @@ export const MfaSetupVerifier = ({
               const { status } = result;
               if (status === 400) {
                 const { errors } = result;
-                return errors.forEach((error) => toast.error(error.message));
+                return errors.forEach((error) => toast.error("Error Occured"));
               }
             }
 
