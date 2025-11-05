@@ -29,10 +29,10 @@ export const MfaSetupInstruction = ({ nextFn }: { nextFn: () => void }) => {
       <section className="flex flex-col gap-10">
         <section className="flex flex-col lg:flex-row gap-6">
           <div className="flex flex-col gap-6 lg:w-[480px] lg:order-2">
-            <MfaQrCode url={totp?.totp_url} />
+            {/* <MfaQrCode url={totp?.totp_url} />
             <p className="font-semibold text-xs text-center">
               Can&apos;t scan? Use this secret key instead: {totp?.secret}
-            </p>
+            </p> */}
             <div className="flex flex-col gap-4">
               <MfaSetupVerifier onActivated={nextFn}>
                 <Button className="hidden lg:flex w-full">Continue</Button>
