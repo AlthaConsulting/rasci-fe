@@ -217,12 +217,12 @@ export function DataTable<TData, TValue>({
     ): number => {
       const currentHeader = column[currentIndex - 1];
       const meta = currentHeader?.column.columnDef.meta;
-      const fixed = meta?.fixed;
+      // const fixed = meta?.fixed;
 
-      if (fixed === "left") {
-        const size = currentHeader.column.columnDef.size || 0;
-        return size + calculateOffsetLeft(column, currentIndex - 1);
-      }
+      // if (fixed === "left") {
+      //   const size = currentHeader.column.columnDef.size || 0;
+      //   return size + calculateOffsetLeft(column, currentIndex - 1);
+      // }
 
       return 0;
     },
@@ -236,12 +236,12 @@ export function DataTable<TData, TValue>({
     ): number => {
       const currentHeader = column[currentIndex + 1];
       const meta = currentHeader?.column.columnDef.meta;
-      const fixed = meta?.fixed;
+      // const fixed = meta?.fixed;
 
-      if (fixed === "right") {
-        const size = currentHeader.column.columnDef.size || 64;
-        return size + calculateOffsetRight(column, currentIndex + 1);
-      }
+      // if (fixed === "right") {
+      //   const size = currentHeader.column.columnDef.size || 64;
+      //   return size + calculateOffsetRight(column, currentIndex + 1);
+      // }
 
       return 0;
     },
@@ -323,35 +323,35 @@ export function DataTable<TData, TValue>({
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header, index, items) => {
                     const meta = header.column.columnDef.meta;
-                    const fixed = meta?.fixed;
+                    // const fixed = meta?.fixed;
 
                     return (
                       <TableHead
                         key={header.id}
                         className={cn(
                           "after:absolute after:top-0 after:bottom-px after:w-[30px] after:transition-shadow after:pointer-events-none",
-                          fixed === "left" &&
-                            "after:right-0 after:translate-x-full",
-                          fixed === "right" &&
-                            "after:left-0 after:-translate-x-full",
-                          fixed === "left" &&
-                            showShadow &&
-                            "after:shadow-[inset_10px_0_8px_-8px_rgba(5,5,5,0.06)]",
-                          fixed === "right" &&
-                            "after:shadow-[inset_-10px_0_8px_-8px_rgba(5,5,5,0.06)]",
-                          fixed && "sticky"
+                          // fixed === "left" &&
+                          //   "after:right-0 after:translate-x-full",
+                          // fixed === "right" &&
+                          //   "after:left-0 after:-translate-x-full",
+                          // fixed === "left" &&
+                          //   showShadow &&
+                          //   "after:shadow-[inset_10px_0_8px_-8px_rgba(5,5,5,0.06)]",
+                          // fixed === "right" &&
+                          //   "after:shadow-[inset_-10px_0_8px_-8px_rgba(5,5,5,0.06)]",
+                          // fixed && "sticky"
                         )}
                         scope="col"
                         style={
                           {
-                            ...(fixed === "left" && {
-                              left: calculateOffsetLeft(items, index),
-                              zIndex: index,
-                            }),
-                            ...(fixed === "right" && {
-                              right: calculateOffsetRight(items, index),
-                              zIndex: items.length - index,
-                            }),
+                            // ...(fixed === "left" && {
+                            //   left: calculateOffsetLeft(items, index),
+                            //   zIndex: index,
+                            // }),
+                            // ...(fixed === "right" && {
+                            //   right: calculateOffsetRight(items, index),
+                            //   zIndex: items.length - index,
+                            // }),
                             overflowWrap: "break-word",
                           } as any
                         }
@@ -385,25 +385,25 @@ export function DataTable<TData, TValue>({
                     <TableRow className="group" key={row.id}>
                       {row.getVisibleCells().map((cell, index, items) => {
                         const meta = cell.column.columnDef.meta;
-                        const action = meta?.action;
-                        const fixed = meta?.fixed;
+                        // const action = meta?.action;
+                        // const fixed = meta?.fixed;
 
                         return (
                           <TableCell
                             key={cell.id}
                             className={cn(
                               "after:absolute after:top-0 after:bottom-px after:w-[30px] after:transition-shadow after:pointer-events-none",
-                              fixed === "left" &&
-                                "after:right-0 after:translate-x-full",
-                              fixed === "right" &&
-                                "after:left-0 after:-translate-x-full",
-                              fixed === "left" &&
-                                showShadow &&
-                                "after:shadow-[inset_10px_0_8px_-8px_rgba(5,5,5,0.06)]",
-                              fixed === "right" &&
-                                "after:shadow-[inset_-10px_0_8px_-8px_rgba(5,5,5,0.06)]",
-                              fixed && "sticky transition-colors duration-0",
-                              action && "text-center",
+                              // fixed === "left" &&
+                              //   "after:right-0 after:translate-x-full",
+                              // fixed === "right" &&
+                              //   "after:left-0 after:-translate-x-full",
+                              // fixed === "left" &&
+                              //   showShadow &&
+                              //   "after:shadow-[inset_10px_0_8px_-8px_rgba(5,5,5,0.06)]",
+                              // fixed === "right" &&
+                              //   "after:shadow-[inset_-10px_0_8px_-8px_rgba(5,5,5,0.06)]",
+                              // fixed && "sticky transition-colors duration-0",
+                              // action && "text-center",
                               isParentRow
                                 ? "bg-background group-hover:bg-[#f8fafc]"
                                 : "bg-accent group-hover:bg-accent"
@@ -411,14 +411,14 @@ export function DataTable<TData, TValue>({
                             data-state={row.getIsSelected() && "selected"}
                             style={
                               {
-                                ...(fixed === "left" && {
-                                  left: calculateOffsetLeft(items, index),
-                                  zIndex: index,
-                                }),
-                                ...(fixed === "right" && {
-                                  right: calculateOffsetRight(items, index),
-                                  zIndex: items.length - index,
-                                }),
+                                // ...(fixed === "left" && {
+                                //   left: calculateOffsetLeft(items, index),
+                                //   zIndex: index,
+                                // }),
+                                // ...(fixed === "right" && {
+                                //   right: calculateOffsetRight(items, index),
+                                //   zIndex: items.length - index,
+                                // }),
                                 overflowWrap: "break-word",
                               } as any
                             }
@@ -634,7 +634,7 @@ export function DataTableViewOptions<TData>({
                 checked={column.getIsVisible()}
                 onCheckedChange={(value) => column.toggleVisibility(!!value)}
               >
-                {column.columnDef.meta?.label || column.id}
+                {/* {column.columnDef.meta?.label || column.id} */}
               </DropdownMenuCheckboxItem>
             );
           })}
