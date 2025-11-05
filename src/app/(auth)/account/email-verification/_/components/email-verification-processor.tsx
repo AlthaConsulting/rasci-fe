@@ -34,7 +34,11 @@ export const EmailVerificationProcessor = () => {
             const { status } = result;
             if (status === 400) {
               const { errors } = result;
-              return setErrors(errors);
+              const baseErrors: BaseApiError[] = errors.map((err: any) => ({
+                code: err.code ?? "UNKNOWN",
+                message: err.message ?? err.detail ?? "An unknown error occurred",
+              }));
+              return setErrors(baseErrors);
             }
           }
         
@@ -49,7 +53,11 @@ export const EmailVerificationProcessor = () => {
                       const { status } = result;
                       if (status === 400) {
                         const { errors } = result;
-                        return setErrors(errors);
+                        const baseErrors: BaseApiError[] = errors.map((err: any) => ({
+                          code: err.code ?? "UNKNOWN",
+                          message: err.message ?? err.detail ?? "An unknown error occurred",
+                        }));
+                        return setErrors(baseErrors);
                       }
 
                       // Somebody grabbed someone else's key and is trying to verify it.

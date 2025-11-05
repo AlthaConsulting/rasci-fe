@@ -27,7 +27,7 @@ export const PasswordResetProcessor = () => {
               const INVALID_KEY = "invalid_password_reset";
 
               const { errors } = result;
-              if (errors.some((error) => error.code === INVALID_KEY)) {
+              if ((errors as any[]).some((error) => error.code === INVALID_KEY)) {
                 return router.replace("/login");
               }
             }
