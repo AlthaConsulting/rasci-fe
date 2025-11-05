@@ -18,7 +18,7 @@ export const AuthHeader: React.FC<AuthHeaderProps> = ({ message, title }) => {
       </div>
     ) : (
       <div className="text-center">
-        <p className="text-sm text-center">{message}</p>
+        {/* <p className="text-sm text-center">{message}</p> */}
       </div>
     );
   };
