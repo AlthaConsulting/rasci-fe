@@ -8,8 +8,8 @@ export interface CaptchaAPIPayload {
 
 export async function captcha(
   payload: CaptchaAPIPayload
-): Promise<ApiResponse> {
-  const secretKey: string | undefined = process.env.RECAPTCHA_SECRET_KEY;
+): Promise<ApiResponse<void, void, 200>> {
+  const secretKey = process.env.RECAPTCHA_SECRET_KEY;
   if (!payload.token) throw new Error("Please provide the token");
 
   const url = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${payload.token}`;
@@ -17,5 +17,5 @@ export async function captcha(
 
   if (!response.data.success) throw new Error("Failed to verify");
 
-  return { status: 200, data: undefined, meta: undefined };
+  return { status: 200, data: undefined, meta: undefined, errors: [] };
 }
